@@ -1,0 +1,61 @@
+/* Dispensador de alimento para peces automático V 1.1, todavía en desarrollo la etapa de aviso por email,
+hecho para  cualquiera de los arduino y el NODEMCU esp8266 en cualquiera de sus versiones,  
+se utilizo: 
+   
+      * Micro Servo Towerpro Sg90
+      * Arduino Nano o NODEMCU ESP8266 V 0.9
+      * Módulo Shield Ethernet W5100 en caso de usar Arduino
+
+ 
+ Por Andrés Belisario Noviembre 2016.  "Fuerza Venezuela"
+ yy2cvp@gmail.com  */
+
+
+
+#include <TimeAlarms.h>
+//#include <ESP8266WiFi.h>
+
+#include <Time.h>
+#include <Servo.h>
+//#include "Gsender.h" //Solo para uso con ethernet o wifi
+
+//const char* ssid = "******"; // coloca tu "ssid" aqui
+//const char* password = "******"; // coloca el "password" de tu router aqui
+
+Servo motorServo;
+int ang = 45;
+int anguloInicio = 360; // angulo de inicio
+int anguloFin = 15; // hasta un maximo de 180
+int numeroDeTazones = 2; //cuantos giros da el contenedor
+void setup()
+{
+setTime(10,41,00,23,11,16);
+motorServo.attach(2);   //NODEMCU D4
+//pinMode(0, OUTPUT); //NODEMCU D3
+pinMode(3, OUTPUT); //Arduino
+Alarm.alarmRepeat(6,00,00, servirComida);
+Alarm.alarmRepeat(12,0,0, servirComida);
+Alarm.alarmRepeat(18,0,0, servirComida);
+Alarm.timerOnce(3, servirComida);
+}
+
+
+void loop() {
+Alarm.delay(10); // Esperar un segundo
+}
+void servirComida() {
+delay(10);
+for(int tazon = 0; tazon < numeroDeTazones; tazon ++) {
+//digitalWrite(0, HIGH); //NODEMCU D4
+digitalWrite(3, HIGH); //ARDUINO
+for(ang = anguloInicio; ang > anguloFin; ang -= 1) {
+motorServo.write(ang);
+delay(10);
+}
+//digitalWrite(0, LOW); //NODEMCU D4
+digitalWrite(3, LOW); //ARDUINO
+delay(1000);
+}
+}
+
+/**************final por ahora********************************/
